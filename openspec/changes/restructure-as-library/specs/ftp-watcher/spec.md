@@ -421,10 +421,6 @@ testFixtures SHALL also provide reusable test doubles:
 
 ### Requirement: Migration packaging
 
-> Reframed from change 1: migrations are now per-subsystem and applied at
-> each subsystem's runtime initialisation, against that subsystem's
-> configured DB.
-
 The library SHALL ship discovery's and pipeline's migrations separately,
 each in its subsystem's resource path:
 
@@ -437,6 +433,10 @@ Discovery-only deployments SHALL NOT apply pipeline's migrations and
 vice versa. Composite deployments apply both, but each against its own
 configured DB connection (which may or may not be the same physical
 database).
+
+> Reframed from change 1: migrations are now per-subsystem and applied at
+> each subsystem's runtime initialisation, against that subsystem's
+> configured DB.
 
 #### Scenario: Discovery-only deployment applies only discovery migrations
 
@@ -465,11 +465,6 @@ database).
 
 ### Requirement: Operational status is exposed as routable HTTP routes
 
-> Reframed from change 1 (and from earlier `restructure-as-library`
-> drafts): status routes split per subsystem. Each subsystem exposes its
-> own routable module. The library does not mount, host, or expose the
-> routes on its own; mounting is the consumer's responsibility.
-
 The pipeline subsystem SHALL expose a routable status module covering
 per-location worker state, counts, and last-observed timestamps. In this
 change, the payload is a stub; change 5 populates it.
@@ -484,11 +479,16 @@ The discovery subsystem SHALL expose a routable status module covering:
 Consumers in composite topology mount both modules at distinct paths
 they choose.
 
+> Reframed from change 1 (and from earlier `restructure-as-library`
+> drafts): status routes split per subsystem. Each subsystem exposes its
+> own routable module. The library does not mount, host, or expose the
+> routes on its own; mounting is the consumer's responsibility.
+
 #### Scenario: Discovery status reports configured locations and zero backlog at start
 
 - **GIVEN** a fresh discovery-only deployment with `N` configured locations
 - **WHEN** the discovery status module is queried
-- **THEN** the response includes `"locations_configured": N`
+- **THEN** the response includes `"locationsConfigured": N`
 - **AND** each location's entry shows `backlog: 0` and null
   last-poll/last-publish timestamps
 
